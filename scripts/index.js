@@ -639,7 +639,7 @@ function removeKeys() {
 
 const DESCRIPTION = document.createElement('p');
 DESCRIPTION.classList.add('description');
-DESCRIPTION.innerText = 'The keyboard was created in Windows OS\nCombination for changing the english layout: left-ctrl + left-shift';
+DESCRIPTION.innerText = 'The keyboard was created in Windows OS\nCombination for changing the english layout: left-ctrl + left-alt';
 WRAPPER.append(DESCRIPTION);
 
 function shiftDown(event) {
@@ -933,10 +933,12 @@ KEYBOARD.addEventListener('mousedown', (event) => {
     space();
   } else {
     const TEXT = Array.from(TEXTAREA.value);
-    const LETTER = document.getElementById(event.target.id).textContent;
-    TEXT.splice(TEXTAREA.selectionStart, TEXTAREA.selectionEnd - TEXTAREA.selectionStart, LETTER);
-    TEXTAREA.value = TEXT.join('');
-    cursorPosition += 1;
-    TEXTAREA.setSelectionRange(cursorPosition, cursorPosition);
+    if (event.target.id) {
+      const LETTER = document.getElementById(event.target.id).textContent;
+      TEXT.splice(TEXTAREA.selectionStart, TEXTAREA.selectionEnd - TEXTAREA.selectionStart, LETTER);
+      TEXTAREA.value = TEXT.join('');
+      cursorPosition += 1;
+      TEXTAREA.setSelectionRange(cursorPosition, cursorPosition);
+    }
   }
 });
