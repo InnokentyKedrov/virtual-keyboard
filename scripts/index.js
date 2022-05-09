@@ -654,10 +654,10 @@ function shiftUp(event) {
   document.getElementById(event).classList.remove('pressed');
 }
 
-function capsDown(event) {
+function capsDown() {
   removeKeys();
   createKey(englishCaps);
-  document.getElementById(event).classList.toggle('pressed');
+  document.getElementById('CapsLock').classList.add('pressed');
 }
 
 function capsUp() {
@@ -677,10 +677,10 @@ function shiftUpRu(event) {
   document.getElementById(event).classList.remove('pressed');
 }
 
-function capsDownRu(event) {
+function capsDownRu() {
   removeKeys();
   createKey(russianCaps);
-  document.getElementById(event).classList.toggle('pressed');
+  document.getElementById('CapsLock').classList.toggle('pressed');
 }
 
 function capsUpRu() {
@@ -782,49 +782,50 @@ function space() {
 document.addEventListener('keydown', (event) => {
   changeLanguage(event);
   TEXTAREA.focus();
-  document.getElementById(event.code).classList.add('pressed');
-  if (event.code === 'CapsLock') {
-    if (english === 'true') {
-      if (capsPressed === true) {
+  if (document.getElementById(event.code)) {
+    document.getElementById(event.code).classList.add('pressed');
+    if (event.code === 'CapsLock') {
+      if (english === 'true') {
+        if (capsPressed) {
+          capsPressed = false;
+          shiftUp(event.code);
+        } else {
+          capsPressed = true;
+          capsDown(event.code);
+        }
+      } else if (capsPressed) {
         capsPressed = false;
-        shiftUp(event.code);
+        shiftUpRu(event.code);
       } else {
         capsPressed = true;
-        capsDown(event.code);
+        capsDownRu(event.code);
       }
-    } else if (capsPressed === true) {
-      capsPressed = false;
-      shiftUpRu(event.code);
-    } else {
-      capsPressed = true;
-      capsDownRu(event.code);
     }
-  }
 
-  if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
-    if (english === 'true') {
-      if (capsPressed === true) {
-        capsUp(capsPressed);
+    if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+      if (english === 'true') {
+        if (capsPressed) {
+          capsUp(capsPressed);
+        } else {
+          shiftDown(event.code);
+        }
+      } else if (capsPressed) {
+        capsUpRu(capsPressed);
       } else {
-        shiftDown(event.code);
+        shiftDownRu(event.code);
       }
-    } else if (capsPressed === true) {
-      capsUpRu(capsPressed);
-    } else {
-      shiftDownRu(event.code);
     }
-  }
 
-  event.preventDefault();
-  if (event.code === 'Backspace') {
-    backspace();
-  } else if (event.code === 'Tab') {
-    tab();
-  } else if (event.code === 'Delete') {
-    del();
-  } else if (event.code === 'Enter') {
-    enter();
-  } else if (event.code === 'CapsLock'
+    event.preventDefault();
+    if (event.code === 'Backspace') {
+      backspace();
+    } else if (event.code === 'Tab') {
+      tab();
+    } else if (event.code === 'Delete') {
+      del();
+    } else if (event.code === 'Enter') {
+      enter();
+    } else if (event.code === 'CapsLock'
   || event.code === 'ShiftLeft'
   || event.code === 'ShiftRight'
   || event.code === 'ControlLeft'
@@ -832,37 +833,40 @@ document.addEventListener('keydown', (event) => {
   || event.code === 'AltLeft'
   || event.code === 'AltRight'
   || event.code === 'MetaLeft') {
-    event.preventDefault();
-  } else if (event.code === 'Space') {
-    space();
-  } else {
-    const TEXT = Array.from(TEXTAREA.value);
-    const LETTER = document.getElementById(event.code).textContent;
-    TEXT.splice(TEXTAREA.selectionStart, TEXTAREA.selectionEnd - TEXTAREA.selectionStart, LETTER);
-    TEXTAREA.value = TEXT.join('');
-    cursorPosition += 1;
-    TEXTAREA.setSelectionRange(cursorPosition, cursorPosition);
+      event.preventDefault();
+    } else if (event.code === 'Space') {
+      space();
+    } else {
+      const TEXT = Array.from(TEXTAREA.value);
+      const LETTER = document.getElementById(event.code).textContent;
+      TEXT.splice(TEXTAREA.selectionStart, TEXTAREA.selectionEnd - TEXTAREA.selectionStart, LETTER);
+      TEXTAREA.value = TEXT.join('');
+      cursorPosition += 1;
+      TEXTAREA.setSelectionRange(cursorPosition, cursorPosition);
+    }
   }
 });
 
 document.addEventListener('keyup', (event) => {
   event.preventDefault();
-  pressed.delete(event.code);
-  if (event.code !== 'CapsLock') {
-    document.getElementById(event.code).classList.remove('pressed');
-  }
+  if (document.getElementById(event.code)) {
+    pressed.delete(event.code);
+    if (event.code !== 'CapsLock') {
+      document.getElementById(event.code).classList.remove('pressed');
+    }
 
-  if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
-    if (english === 'true') {
-      if (capsPressed === true) {
-        capsDown(event.code);
+    if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+      if (english === 'true') {
+        if (capsPressed) {
+          capsDown(event.code);
+        } else {
+          shiftUp(event.code);
+        }
+      } else if (capsPressed) {
+        capsDownRu(event.code);
       } else {
-        shiftUp(event.code);
+        shiftUpRu(event.code);
       }
-    } else if (capsPressed === true) {
-      capsDownRu(event.code);
-    } else {
-      shiftUpRu(event.code);
     }
   }
 });
@@ -881,14 +885,14 @@ KEYBOARD.addEventListener('mousedown', (event) => {
   TEXTAREA.focus();
   if (event.target.id === 'CapsLock') {
     if (english === 'true') {
-      if (capsPressed === true) {
+      if (capsPressed) {
         capsPressed = false;
         shiftUp(event.target.id);
       } else {
         capsPressed = true;
         capsDown(event.target.id);
       }
-    } else if (capsPressed === true) {
+    } else if (capsPressed) {
       capsPressed = false;
       shiftUpRu(event.target.id);
     } else {
@@ -899,12 +903,12 @@ KEYBOARD.addEventListener('mousedown', (event) => {
 
   if (event.target.id === 'ShiftLeft' || event.target.id === 'ShiftRight') {
     if (english === 'true') {
-      if (capsPressed === true) {
+      if (capsPressed) {
         capsUp();
       } else {
         shiftDown(event.target.id);
       }
-    } else if (capsPressed === true) {
+    } else if (capsPressed) {
       capsUpRu();
     } else {
       shiftDownRu(event.target.id);
@@ -939,6 +943,30 @@ KEYBOARD.addEventListener('mousedown', (event) => {
       TEXTAREA.value = TEXT.join('');
       cursorPosition += 1;
       TEXTAREA.setSelectionRange(cursorPosition, cursorPosition);
+    }
+  }
+});
+
+KEYBOARD.addEventListener('mouseup', (event) => {
+  event.preventDefault();
+  pressed.delete(event.target.id);
+  if (event.target.id) {
+    if (event.target.id !== 'CapsLock') {
+      document.getElementById(event.target.id).classList.remove('pressed');
+    }
+
+    if (event.target.id === 'ShiftLeft' || event.target.id === 'ShiftRight') {
+      if (english === 'true') {
+        if (capsPressed) {
+          capsDown(event.target.id);
+        } else {
+          shiftUp(event.target.id);
+        }
+      } else if (capsPressed) {
+        capsDownRu(event.target.id);
+      } else {
+        shiftUpRu(event.target.id);
+      }
     }
   }
 });
