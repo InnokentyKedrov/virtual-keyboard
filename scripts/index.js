@@ -689,11 +689,10 @@ function capsUpRu() {
 }
 
 let capsPressed = false;
-let english = Boolean(localStorage.getItem('english'));
-console.log(english);
+let english = localStorage.getItem('english');
 const pressed = new Set();
 
-if (english === true) {
+if (english === 'true') {
   createKey(englishSmall);
 } else { createKey(russianSmall); }
 
@@ -703,19 +702,17 @@ function changeLanguage(event) {
     return;
   }
   pressed.clear();
-  if (english === true) {
-    english = false;
+  if (english === 'true') {
+    english = 'false';
     localStorage.setItem('english', false);
-    console.log(localStorage.getItem('english'));
     if (capsPressed) {
       capsDownRu(event.code);
     } else {
       shiftUpRu(event.code);
     }
   } else {
-    english = true;
+    english = 'true';
     localStorage.setItem('english', true);
-    console.log(localStorage.getItem('english'));
     if (capsPressed) {
       capsDown(event.code);
     } else {
@@ -787,7 +784,7 @@ document.addEventListener('keydown', (event) => {
   TEXTAREA.focus();
   document.getElementById(event.code).classList.add('pressed');
   if (event.code === 'CapsLock') {
-    if (english === true) {
+    if (english === 'true') {
       if (capsPressed === true) {
         capsPressed = false;
         shiftUp(event.code);
@@ -805,7 +802,7 @@ document.addEventListener('keydown', (event) => {
   }
 
   if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
-    if (english === true) {
+    if (english === 'true') {
       if (capsPressed === true) {
         capsUp(capsPressed);
       } else {
@@ -856,7 +853,7 @@ document.addEventListener('keyup', (event) => {
   }
 
   if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
-    if (english === true) {
+    if (english === 'true') {
       if (capsPressed === true) {
         capsDown(event.code);
       } else {
@@ -883,7 +880,7 @@ TEXTAREA.addEventListener('click', () => {
 KEYBOARD.addEventListener('mousedown', (event) => {
   TEXTAREA.focus();
   if (event.target.id === 'CapsLock') {
-    if (english === true) {
+    if (english === 'true') {
       if (capsPressed === true) {
         capsPressed = false;
         shiftUp(event.target.id);
@@ -901,7 +898,7 @@ KEYBOARD.addEventListener('mousedown', (event) => {
   }
 
   if (event.target.id === 'ShiftLeft' || event.target.id === 'ShiftRight') {
-    if (english === true) {
+    if (english === 'true') {
       if (capsPressed === true) {
         capsUp();
       } else {
